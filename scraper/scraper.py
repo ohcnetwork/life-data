@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-from re import sub as replace
 
 STATES_WITH_DISTRICTS = requests.get(
     "https://life-api.coronasafe.network/data/states.json").json()
@@ -16,7 +15,8 @@ def get_records(url):
 
 
 def parameterize(word: str) -> str:
-    return replace("/\s/gu", "_", word).lower().strip()
+    return word.replace(" ", "_").lower().strip()
+
 
 
 def get_district_data(data):
