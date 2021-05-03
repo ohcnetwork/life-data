@@ -59,7 +59,7 @@ export default function Home() {
                   <a key={id}
                     target="_blank"
                     href={`${endpoint}/resources?resource=${e.type}&state=${e.state}&district=${e.district}`}>
-                    <div className="bg-gray-50 mt-2 break-words underline text-indigo-600 text-base md:text-lg font-semibold p-2 rounded-md">resources?resource=<span className="text-red-600 font-semibold text-lg">{e.type}</span>&amp;state=<span className="text-red-600 font-semibold text-lg">{e.state}</span>&amp;district=<span className="text-red-600 font-semibold text-lg">{e.district}</span></div>
+                    <div className="bg-gray-50 mt-2 break-words underline text-indigo-600 text-base md:text-lg font-semibold p-2 rounded-md">/resources?resource=<span className="text-red-600 font-semibold text-lg">{e.type}</span>&amp;state=<span className="text-red-600 font-semibold text-lg">{e.state}</span>&amp;district=<span className="text-red-600 font-semibold text-lg">{e.district}</span></div>
                   </a>
                 )
               }
