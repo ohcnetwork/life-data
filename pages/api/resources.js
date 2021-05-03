@@ -4,6 +4,8 @@ import { findResource } from "/lib/api";
 export default (req, res) => {
   let { state, district, resource } = req.query;
 
+  resource = parametreize(resource)
+
   if (state && district && resource) {
     switch (resource) {
       case "oxygen":
