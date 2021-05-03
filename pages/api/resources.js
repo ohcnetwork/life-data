@@ -17,12 +17,12 @@ export default (req, res) => {
         break;
       default:
         res
-          .status(404)
-          .json({ name: "Unable to find resource with key: " + resource });
+          .status(405)
+          .json({ error: "Unable to find resource with key: " + resource });
     }
   } else {
     res
-      .status(404)
-      .json({ error: "Unable to verify state or district or resource" });
+      .status(405)
+      .json({ error: "Please make sure that the state, district and resource are present and valid" });
   }
 };
