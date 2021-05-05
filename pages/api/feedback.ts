@@ -17,6 +17,10 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
             "Feedback": {
                 DataType: "String",
                 StringValue: feedback
+            },
+            "External ID": {
+                DataType: "String",
+                StringValue: external_id
             }
         }
     }
