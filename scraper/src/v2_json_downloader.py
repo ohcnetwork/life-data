@@ -89,3 +89,5 @@ for life_file_key in list_of_life_files:
     generate_v2_file(url=life_file, data={"data" : json.loads(data.decode())})
     parseInfo(life_file_key, data)
     #list_of_life_files[life_file_key]["parseFunction"](data)
+
+import scraper
