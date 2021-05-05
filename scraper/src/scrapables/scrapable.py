@@ -12,11 +12,11 @@ class Scrapable:
   def get_json(self):
     pass
 
-  def save(self, filename):
+  def dataframe(self):
     df = pd.DataFrame(self.get_json())
     if len(self.column_map.keys())!=0:
       df.rename(columns=self.column_map, inplace=True)
       uncommon_cols = list(set(df.columns)-set(self.column_map.values()))
       df.drop(uncommon_cols, axis='columns', inplace=True)
     df.index.name = 'id'
-    df.to_csv(filename)
+    return df
