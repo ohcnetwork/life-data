@@ -29,4 +29,3 @@ class CoronaHaryanaIn(Scrapable):
 
 if __name__=='__main__':
   data = CoronaHaryanaIn()
-  data.save('delhi.csv')

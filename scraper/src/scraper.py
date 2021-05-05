@@ -32,4 +32,8 @@ scrapables = [
 
 import pandas as pd
 df = pd.DataFrame()
-df.append([x().dataframe() for x in scrapables]).to_csv('../../data/hospital-ext.csv')
+#print([sorted(list(map(int,x().dataframe().columns))) for x in scrapables])
+df.append(
+  [x().dataframe() for x in scrapables],
+  ignore_index = True
+).to_csv('../../data/hospital-ext.csv')

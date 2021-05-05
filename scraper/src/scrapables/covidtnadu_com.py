@@ -4,6 +4,24 @@ class CovidTNaduCom(Scrapable):
   hospital = 'https://covidtnadu.com/data/covidtnadu.com/bed_data.json'
   plasma = 'https://covidtnadu.com/data/covidtnadu.com/plasma_data.json'
 
+  column_map = {
+    'available_beds_with_oxygen': '1',
+    'total_beds_without_oxygen': '2',
+    'available_beds_without_oxygen': '3',
+    'total_beds_allocated_to_covid': '4',
+    'available_icu_beds_without_ventilator': '5',
+    'last_updated_on': '6',
+    'district': '7',
+    'available_icu_beds_with_ventilator': '8',
+    'hospital_address': '9',
+    'hospital_phone': '10',
+    'pincode': '11',
+    'hospital_name': '12',
+    'total_icu_beds_with_ventilator': '13',
+    'total_icu_beds_without_ventilator': '14',
+    'total_beds_with_oxygen': '15',
+    'area': '16'
+  }
   def get_json(self):
     import requests
     response = requests.get(self.hospital)
@@ -15,3 +33,7 @@ class CovidTNaduCom(Scrapable):
           record[key]=None
         data[key].append(record[key])
     return data
+
+if __name__=='__main__':
+  data = CovidTNaduCom()
+  print('Columns', data.dataframe().columns)

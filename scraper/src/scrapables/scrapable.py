@@ -18,5 +18,4 @@ class Scrapable:
       df.rename(columns=self.column_map, inplace=True)
       uncommon_cols = list(set(df.columns)-set(self.column_map.values()))
       df.drop(uncommon_cols, axis='columns', inplace=True)
-    df.index.name = 'id'
     return df
