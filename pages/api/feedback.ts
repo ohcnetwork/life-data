@@ -9,6 +9,17 @@ AWS.config.update({
 })
 var sqs = new AWS.SQS({ apiVersion: '2012-11-05' })
 
+enum ResponseTypes {
+    Success,
+    Error
+}
+
+interface IResponse {
+    type: ResponseTypes
+    message: String
+    data?: any
+}
+
 const isCaptchaVerified = async (captchaResponse: string) => {
     const { data } = await axios.post('https://www.google.com/recaptcha/api/siteverify', [], {
         params: {
@@ -39,25 +50,38 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     }
 
     if (await isCaptchaVerified(captchaRes)) {
-        return sqs.sendMessage(sqsParams, (err, data) => {
+        return sqs.sendMessage(sqsParams, (err, _) => {
             if (!err) {
-                return res.json({
-                    type: 'success',
+                return respond(res, {
+                    type: ResponseTypes.Success,
                     message: 'Feedback has been successfully recorded'
                 })
             }
 
-            return res.json({
-                type: 'error',
-                message: 'Error while recording feedback'
-            }).status(500)
+            return respond(res, {
+                type: ResponseTypes.Error,
+                message: 'Error while recording your feedback'
+            })
         })
     }
 
-    return res.json({
-        type: 'error',
-        message: 'Captcha not verified'
-    }).status(500)
+    return respond(res, {
+        type: ResponseTypes.Error,
+        message: 'Captcha was not verified'
+    })
+}
+
+const respond = (res: VercelResponse, payload: IResponse) => {
+    const resData = {
+        type: ResponseTypes[payload.type],
+        message: payload.message,
+        data: payload.data
+    }
+
+    if (payload.type === ResponseTypes.Error)
+        return res.status(500).json(resData)
+    
+    return res.json(resData)
 }
 
 export default handler
