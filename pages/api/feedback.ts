@@ -51,43 +51,43 @@ const respond = (res: VercelResponse, payload: IResponse) => {
     return res.json(resData)
 }
 
+const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendMessageResult> =>
+    new Promise((resolve, reject) => {
+        const choice = Choices[feedback]
+        const sqsParams: AWS.SQS.SendMessageRequest = {
+            QueueUrl: process.env.AWS_SQS_URL,
+            MessageBody: 'Feedback submitted by user, ' + choice,
+            MessageAttributes: {
+                'Feedback': {
+                    DataType: 'String',
+                    StringValue: choice
+                },
+                'ExternalID': {
+                    DataType: 'String',
+                    StringValue: external_id
+                }
+            }
+        }
+
+        sqs.sendMessage(sqsParams, (err, data) => err ? reject(err) : resolve(data))
+    })
+
 const handler = async (req: VercelRequest, res: VercelResponse) => {
     const { feedback, external_id } = req.body
     const captchaRes = req.body['g-recaptcha-response']
-    const sqsParams: AWS.SQS.SendMessageRequest = {
-        QueueUrl: process.env.AWS_SQS_URL,
-        MessageBody: 'Feedback submitted by user, ' + feedback,
-        MessageAttributes: {
-            'Feedback': {
-                DataType: 'String',
-                StringValue: feedback
-            },
-            'External ID': {
-                DataType: 'String',
-                StringValue: external_id
-            },
-        }
-    }
 
-    if (await isCaptchaVerified(captchaRes)) {
-        return sqs.sendMessage(sqsParams, (err, _) => {
-            if (!err) {
-                return respond(res, {
-                    type: ResponseTypes.Success,
-                    message: 'Feedback has been successfully recorded'
-                })
-            }
+    const sentToSQS = await sendToSQS(feedback, external_id)
+    const captchaVerified = await isCaptchaVerified(captchaRes)
 
-            return respond(res, {
-                type: ResponseTypes.Error,
-                message: 'Error while recording your feedback'
-            })
+    if (captchaVerified && sentToSQS)
+        return respond(res, {
+            type: ResponseTypes.Success,
+            message: 'Feedback has been successfully recorded'
         })
-    }
 
     return respond(res, {
         type: ResponseTypes.Error,
-        message: 'Captcha was not verified'
+        message: 'Error while recording your feedback'
     })
 }
 
