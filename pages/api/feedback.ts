@@ -9,6 +9,13 @@ AWS.config.update({
 })
 var sqs = new AWS.SQS({ apiVersion: '2012-11-05' })
 
+enum Choices {
+    Upvote,
+    Downvote,
+    VerifiedAndAvailable,
+    VerifiedAndUnavailable
+}
+
 enum ResponseTypes {
     Success,
     Error
@@ -29,6 +36,19 @@ const isCaptchaVerified = async (captchaResponse: string) => {
     })
 
     return data.success
+}
+
+const respond = (res: VercelResponse, payload: IResponse) => {
+    const resData = {
+        type: ResponseTypes[payload.type],
+        message: payload.message,
+        data: payload.data
+    }
+
+    if (payload.type === ResponseTypes.Error)
+        return res.status(500).json(resData)
+    
+    return res.json(resData)
 }
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
@@ -69,19 +89,6 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
         type: ResponseTypes.Error,
         message: 'Captcha was not verified'
     })
-}
-
-const respond = (res: VercelResponse, payload: IResponse) => {
-    const resData = {
-        type: ResponseTypes[payload.type],
-        message: payload.message,
-        data: payload.data
-    }
-
-    if (payload.type === ResponseTypes.Error)
-        return res.status(500).json(resData)
-    
-    return res.json(resData)
 }
 
 export default handler
