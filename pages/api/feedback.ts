@@ -72,9 +72,19 @@ const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendM
         sqs.sendMessage(sqsParams, (err, data) => err ? reject(err) : resolve(data))
     })
 
+const choiceExists = (feedback: number) => {
+    return Choices[feedback] == undefined ? false : true
+}
+
 const handler = async (req: VercelRequest, res: VercelResponse) => {
     const { feedback, external_id } = req.body
     const captchaRes = req.body['g-recaptcha-response']
+
+    if (!choiceExists(feedback))
+        return respond(res, {
+            type: ResponseTypes.Error,
+            message: 'The choice you selected does not exist'
+        })
 
     const sentToSQS = await sendToSQS(feedback, external_id)
     const captchaVerified = await isCaptchaVerified(captchaRes)
