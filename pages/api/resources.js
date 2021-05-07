@@ -20,6 +20,7 @@ const handler = async (req, res) => {
       case "ambulance":
       case "helpline":
       case "hospital":
+      case "food":
         res.status(200).json({ data: findResource(state, district, resource) });
         break;
       default:
