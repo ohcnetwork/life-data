@@ -1,0 +1,34 @@
+import { VercelRequest, VercelResponse } from '@vercel/node'
+
+export enum ResponseTypes {
+    Success,
+    Error
+}
+
+export interface IResponse {
+    type: ResponseTypes
+    message: String
+    data?: any
+}
+
+export interface VercelHandler {
+    (req: VercelRequest, res: VercelResponse): VercelResponse | Promise<VercelResponse>
+}
+
+export const respond = (res: VercelResponse, payload: IResponse) => {
+    const resData = {
+        type: ResponseTypes[payload.type],
+        message: payload.message,
+        data: payload.data
+    }
+
+    if (payload.type === ResponseTypes.Error)
+        return res.status(500).json(resData)
+    
+    return res.json(resData)
+}
+
+export const isUserAllowed = (token: string) => {
+    const authTokens = process.env.AUTH_TOKENS.split(',')
+    return authTokens.includes(token)
+}
