@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as AWS from 'aws-sdk'
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { isUserAllowed, respond, ResponseTypes } from '../../lib/helpers'
+import { isUserAllowed, respond, ResponseTypes, VercelHandler } from '../../lib/helpers'
 
 AWS.config.update({
     accessKeyId: process.env.AWS_SQS_ACCESS,
@@ -81,7 +81,18 @@ const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
     })
 }
 
-const handler = async (req: VercelRequest, res: VercelResponse) => {
+const updateVerification: VercelHandler = async (req, res) => {
+    const { feedback, external_id } = req.body
+
+    // TODO: Implement updation of verification status for the particular data
+
+    return respond(res, {
+        type: ResponseTypes.Success,
+        message: 'Verification status has been updated successfully'
+    })
+}
+
+const handler: VercelHandler = async (req, res) => {
     const captchaRes = req.body['g-recaptcha-response']
     const method = req.method.toLowerCase()
 
@@ -95,6 +106,9 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     switch (method) {
         case 'post':
             await submitFeedback(req, res)
+            break
+        case 'put':
+            await updateVerification(req, res)
             break
         default:
             respond(res, {

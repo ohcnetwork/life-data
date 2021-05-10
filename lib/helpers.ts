@@ -1,4 +1,4 @@
-import { VercelResponse } from '@vercel/node'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 
 export enum ResponseTypes {
     Success,
@@ -9,6 +9,10 @@ export interface IResponse {
     type: ResponseTypes
     message: String
     data?: any
+}
+
+export interface VercelHandler {
+    (req: VercelRequest, res: VercelResponse): VercelResponse | Promise<VercelResponse>
 }
 
 export const respond = (res: VercelResponse, payload: IResponse) => {
