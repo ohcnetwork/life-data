@@ -54,7 +54,6 @@ const choiceExists = (feedback: number) =>
 
 const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
     const { feedback, external_id, token } = req.body
-    const captchaRes = req.body['g-recaptcha-response']
 
     if (!choiceExists(feedback))
         return respond(res, {
@@ -69,9 +68,8 @@ const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
         })
 
     const sentToSQS = await sendToSQS(feedback, external_id)
-    const captchaVerified = await isCaptchaVerified(captchaRes)
 
-    if (captchaVerified && sentToSQS)
+    if (sentToSQS)
         return respond(res, {
             type: ResponseTypes.Success,
             message: 'Feedback has been successfully recorded'
@@ -84,7 +82,16 @@ const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
 }
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
+    const captchaRes = req.body['g-recaptcha-response']
     const method = req.method.toLowerCase()
+
+    const captchaVerified = await isCaptchaVerified(captchaRes)
+    if (!captchaVerified)
+        return respond(res, {
+            type: ResponseTypes.Error,
+            message: 'Captcha verification failed'
+        })
+
     switch (method) {
         case 'post':
             await submitFeedback(req, res)
