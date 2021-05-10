@@ -1,7 +1,14 @@
 import { parametreize } from "../../lib/utils";
 import { findResource } from "/lib/api";
+import NextCors from 'nextjs-cors';
 
-export default (req, res) => {
+const handler = async (req, res) => {
+  await NextCors(req, res, {
+     methods: ['GET'],
+     origin: '*',
+     optionsSuccessStatus: 200,
+  });
+
   let { state, district, resource } = req.query;
 
   resource = parametreize(resource)
@@ -13,6 +20,7 @@ export default (req, res) => {
       case "ambulance":
       case "helpline":
       case "hospital":
+      case "food":
         res.status(200).json({ data: findResource(state, district, resource) });
         break;
       default:
@@ -25,4 +33,6 @@ export default (req, res) => {
       .status(405)
       .json({ error: "Please make sure that the state, district and resource are present and valid" });
   }
-};
+}
+
+export default handler;

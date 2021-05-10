@@ -7,7 +7,7 @@ endpoint: https://life-pipeline.coronasafe.network/api/resources?state=state_nam
 params:
   - state: state_name
   - district: district_name
-  - resource: oxygen | medicine | hospital | helpline | ambulance
+  - resource: oxygen | medicine | hospital | helpline | ambulance | food
 ```
 
 ### Example

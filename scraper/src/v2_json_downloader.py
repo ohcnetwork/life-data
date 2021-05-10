@@ -78,6 +78,9 @@ list_of_life_files = {
     },
      "ambulance": {
         "url": "https://life_data.coronasafe.network/ambulance.json"
+    },
+    "food": {
+        "url": "https://life_data.coronasafe.network/food.json"
     }
 }
 
