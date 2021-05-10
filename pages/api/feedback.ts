@@ -1,6 +1,7 @@
 import axios from 'axios'
 import * as AWS from 'aws-sdk'
 import { VercelRequest, VercelResponse } from '@vercel/node'
+import { respond, ResponseTypes } from '../../lib/helpers'
 
 AWS.config.update({
     accessKeyId: process.env.AWS_SQS_ACCESS,
@@ -16,17 +17,6 @@ enum Choices {
     VerifiedAndUnavailable
 }
 
-enum ResponseTypes {
-    Success,
-    Error
-}
-
-interface IResponse {
-    type: ResponseTypes
-    message: String
-    data?: any
-}
-
 const isCaptchaVerified = async (captchaResponse: string) => {
     const { data } = await axios.post('https://www.google.com/recaptcha/api/siteverify', [], {
         params: {
@@ -36,19 +26,6 @@ const isCaptchaVerified = async (captchaResponse: string) => {
     })
 
     return data.success
-}
-
-const respond = (res: VercelResponse, payload: IResponse) => {
-    const resData = {
-        type: ResponseTypes[payload.type],
-        message: payload.message,
-        data: payload.data
-    }
-
-    if (payload.type === ResponseTypes.Error)
-        return res.status(500).json(resData)
-    
-    return res.json(resData)
 }
 
 const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendMessageResult> =>
