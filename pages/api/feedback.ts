@@ -76,7 +76,7 @@ const choiceExists = (feedback: number) => {
     return Choices[feedback] == undefined ? false : true
 }
 
-const handler = async (req: VercelRequest, res: VercelResponse) => {
+const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
     const { feedback, external_id } = req.body
     const captchaRes = req.body['g-recaptcha-response']
 
@@ -99,6 +99,20 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
         type: ResponseTypes.Error,
         message: 'Error while recording your feedback'
     })
+}
+
+const handler = async (req: VercelRequest, res: VercelResponse) => {
+    const method = req.method.toLowerCase()
+    switch (method) {
+        case 'post':
+            await submitFeedback(req, res)
+            break
+        default:
+            respond(res, {
+                type: ResponseTypes.Error,
+                message: method + ' HTTP method is not supported'
+            })
+    }
 }
 
 export default handler
