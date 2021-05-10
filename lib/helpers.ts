@@ -23,3 +23,8 @@ export const respond = (res: VercelResponse, payload: IResponse) => {
     
     return res.json(resData)
 }
+
+export const isUserAllowed = (token: string) => {
+    const authTokens = process.env.AUTH_TOKENS.split(',')
+    return authTokens.includes(token)
+}

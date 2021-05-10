@@ -1,14 +1,14 @@
 import axios from 'axios'
 import * as AWS from 'aws-sdk'
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { respond, ResponseTypes } from '../../lib/helpers'
+import { isUserAllowed, respond, ResponseTypes } from '../../lib/helpers'
 
 AWS.config.update({
     accessKeyId: process.env.AWS_SQS_ACCESS,
     secretAccessKey: process.env.AWS_SQS_SECRET,
     region: process.env.AWS_SQS_REGION
 })
-var sqs = new AWS.SQS({ apiVersion: '2012-11-05' })
+const sqs = new AWS.SQS({ apiVersion: '2012-11-05' })
 
 enum Choices {
     Upvote,
@@ -49,18 +49,23 @@ const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendM
         sqs.sendMessage(sqsParams, (err, data) => err ? reject(err) : resolve(data))
     })
 
-const choiceExists = (feedback: number) => {
-    return Choices[feedback] == undefined ? false : true
-}
+const choiceExists = (feedback: number) => 
+    Choices[feedback] == undefined ? false : true
 
 const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
-    const { feedback, external_id } = req.body
+    const { feedback, external_id, token } = req.body
     const captchaRes = req.body['g-recaptcha-response']
 
     if (!choiceExists(feedback))
         return respond(res, {
             type: ResponseTypes.Error,
             message: 'The choice you selected does not exist'
+        })
+
+    if (Choices[feedback] === 'VerifiedAndAvailable' && !isUserAllowed(token))
+        return respond(res, {
+            type: ResponseTypes.Error,
+            message: 'You are not allowed to change the verification status'
         })
 
     const sentToSQS = await sendToSQS(feedback, external_id)
