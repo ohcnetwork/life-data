@@ -92,6 +92,15 @@ const updateVerification: VercelHandler = async (req, res) => {
     })
 }
 
+const getFeedbacks: VercelHandler = async (req, res) => {
+    // TODO: Implement getting feedbacks
+
+    return respond(res, {
+        type: ResponseTypes.Success,
+        message: 'Verification status has been updated successfully'
+    })
+}
+
 const handler: VercelHandler = async (req, res) => {
     const captchaRes = req.body['g-recaptcha-response']
     const method = req.method.toLowerCase()
@@ -109,6 +118,9 @@ const handler: VercelHandler = async (req, res) => {
             break
         case 'put':
             await updateVerification(req, res)
+            break
+        case 'get':
+            await getFeedbacks(req, res)
             break
         default:
             respond(res, {
