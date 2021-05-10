@@ -93,11 +93,21 @@ const updateVerification: VercelHandler = async (req, res) => {
 }
 
 const getFeedbacks: VercelHandler = async (req, res) => {
-    // TODO: Implement getting feedbacks
+    // TODO: Implement getting feedbacks. Data object below shows an example
 
     return respond(res, {
         type: ResponseTypes.Success,
-        message: 'Verification status has been updated successfully'
+        message: 'Successfully obtained all feedbacks',
+        data: [
+            {
+                external_id: '4983-8423-2384',
+                feedback: 'VerifiedAndAvailable'
+            },
+            {
+                external_id: '9234-8024-4043',
+                feedback: 'Downvote'
+            }
+        ]
     })
 }
 
@@ -114,16 +124,13 @@ const handler: VercelHandler = async (req, res) => {
 
     switch (method) {
         case 'post':
-            await submitFeedback(req, res)
-            break
+            return await submitFeedback(req, res)
         case 'put':
-            await updateVerification(req, res)
-            break
+            return await updateVerification(req, res)
         case 'get':
-            await getFeedbacks(req, res)
-            break
+            return await getFeedbacks(req, res)
         default:
-            respond(res, {
+            return respond(res, {
                 type: ResponseTypes.Error,
                 message: method + ' HTTP method is not supported'
             })
