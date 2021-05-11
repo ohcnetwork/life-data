@@ -61,12 +61,6 @@ const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
             message: 'The choice you selected does not exist'
         })
 
-    if (Choices[feedback] === 'VerifiedAndAvailable' && !isUserAllowed(token))
-        return respond(res, {
-            type: ResponseTypes.Error,
-            message: 'You are not allowed to change the verification status'
-        })
-
     const sentToSQS = await sendToSQS(feedback, external_id)
 
     if (sentToSQS)
@@ -123,6 +117,13 @@ const handler: VercelHandler = async (req, res) => {
                 type: ResponseTypes.Error,
                 message: 'Captcha verification failed'
             })
+    } else {
+        if (!isUserAllowed(token)) {
+            return respond(res, {
+                type: ResponseTypes.Error,
+                message: 'Token is invalid'
+            })
+        }
     }
 
     switch (method) {
