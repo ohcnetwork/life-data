@@ -49,7 +49,7 @@ const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendM
         sqs.sendMessage(sqsParams, (err, data) => err ? reject(err) : resolve(data))
     })
 
-const choiceExists = (feedback: number) => 
+const choiceExists = (feedback: number) =>
     Choices[feedback] == undefined ? false : true
 
 const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
@@ -112,15 +112,18 @@ const getFeedbacks: VercelHandler = async (req, res) => {
 }
 
 const handler: VercelHandler = async (req, res) => {
+    const { token } = req.body
     const captchaRes = req.body['g-recaptcha-response']
     const method = req.method.toLowerCase()
 
-    const captchaVerified = await isCaptchaVerified(captchaRes)
-    if (!captchaVerified)
-        return respond(res, {
-            type: ResponseTypes.Error,
-            message: 'Captcha verification failed'
-        })
+    if (!token) {
+        const captchaVerified = await isCaptchaVerified(captchaRes)
+        if (!captchaVerified)
+            return respond(res, {
+                type: ResponseTypes.Error,
+                message: 'Captcha verification failed'
+            })
+    }
 
     switch (method) {
         case 'post':
