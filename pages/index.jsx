@@ -7,9 +7,10 @@ export default function Home() {
   const endpoint = "https://life-pipeline.coronasafe.network/api";
 
   const examples = [
-    { type: "oxygen", state: "maharashtra", district: "latur" },
-    { type: "helpline", state: "tamil_nadu", district: "kanyakumari" },
-    { type: "medicine", state: "kerala", district: "ernakulam" },
+    { resource: "oxygen", state: "maharashtra", district: "latur" },
+    { resource: "helpline", state: "tamil_nadu", district: "kanyakumari" },
+    { resource: "medicine", state: "kerala", district: "ernakulam" },
+    { resource: "oxygen", state: "maharashtra", district: "latur", epoch: 13 },
   ]
 
   return (
@@ -42,13 +43,14 @@ export default function Home() {
             <section className="mt-5">
               <h2 className="font-medium">Available Objects:</h2>
               <div className="bg-gray-50 mt-2 text-indigo-600 text-base md:text-lg font-semibold p-2 rounded-md">
-                <span><span className="text-gray-900">GET</span> /resources?resource=<span className="text-red-600 font-semibold text-lg">{'{'}type{'}'}</span>&amp;state=<span className="text-red-600 font-semibold text-lg">{'{'}state{'}'}</span> &amp;district=<span className="text-red-600 font-semibold text-lg">{'{'}district{'}'}</span></span>
+                <span><span className="text-gray-900">GET</span> /resources?resource=<span className="text-red-600 font-semibold text-lg">{'{'}type{'}'}</span>&amp;state=<span className="text-red-600 font-semibold text-lg">{'{'}state{'}'}</span> &amp;district=<span className="text-red-600 font-semibold text-lg">{'{'}district{'}'}</span>&amp;epoch=<span className="text-red-600 font-semibold text-lg">{'{'}number{'}'}</span></span>
               </div>
               <span className="text-xs"><span className="font-medium">Note:</span> this object has three required paramaters</span>
             </section>
             <section className="mt-5">
               <h2 className="font-medium my-1">Parameters:</h2>
               <div className="text-base">All parameters must be lowercased and space replaced with underscore ( _ ).</div>
+              <div className="text-base">Epoch is an optional parameter used to filter records that are verified in last n days.</div>
               <div className="text-sm mt-2">Eg: <span className="font-medium">Andhra Pradesh</span> should be <span className="font-medium">andhra_pradesh</span></div>
               <a target="_blank" className="text-indigo-600 hover:text-indigo-900 font-medium text-sm" href="https://github.com/coronasafe/life/wiki/Life-Data-Structure">Learn More</a>
             </section>
@@ -58,8 +60,8 @@ export default function Home() {
                 examples.map((e, id) =>
                   <a key={id}
                     target="_blank"
-                    href={`${endpoint}/resources?resource=${e.type}&state=${e.state}&district=${e.district}`}>
-                    <div className="bg-gray-50 mt-2 break-words underline text-indigo-600 text-base md:text-lg font-semibold p-2 rounded-md">/resources?resource=<span className="text-red-600 font-semibold text-lg">{e.type}</span>&amp;state=<span className="text-red-600 font-semibold text-lg">{e.state}</span>&amp;district=<span className="text-red-600 font-semibold text-lg">{e.district}</span></div>
+                    href={`${endpoint}/resources?${Object.entries(e).map(([key, value]) => `${key}=${value}`).join('&')}`}>
+                    <div className="bg-gray-50 mt-2 break-words underline text-indigo-600 text-base md:text-lg font-semibold p-2 rounded-md">/resources?{Object.entries(e).map(([key, value]) => <span key={key}>{key}=<span className="text-red-600 font-semibold text-lg">{value}</span></span>).reduce((prev, curr) => [prev, '&', curr])}</div>
                   </a>
                 )
               }
