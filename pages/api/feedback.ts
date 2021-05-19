@@ -109,20 +109,23 @@ const handler: VercelHandler = async (req, res) => {
     const { token } = req.body
     const captchaRes = req.body['g-recaptcha-response']
     const method = req.method.toLowerCase()
+    const production = process.env.NODE_ENV === 'production'
 
-    if (!token) {
-        const captchaVerified = await isCaptchaVerified(captchaRes)
-        if (!captchaVerified)
-            return respond(res, {
-                type: ResponseTypes.Error,
-                message: 'Captcha verification failed'
-            })
-    } else {
-        if (!isUserAllowed(token))
-            return respond(res, {
-                type: ResponseTypes.Error,
-                message: 'Token is invalid'
-            })
+    if (production) {
+        if (!token) {
+            const captchaVerified = await isCaptchaVerified(captchaRes)
+            if (!captchaVerified)
+                return respond(res, {
+                    type: ResponseTypes.Error,
+                    message: 'Captcha verification failed'
+                })
+        } else {
+            if (!isUserAllowed(token))
+                return respond(res, {
+                    type: ResponseTypes.Error,
+                    message: 'Token is invalid'
+                })
+        }
     }
 
     switch (method) {
