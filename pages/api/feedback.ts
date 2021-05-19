@@ -53,7 +53,7 @@ const choiceExists = (feedback: number) =>
     Choices[feedback] == undefined ? false : true
 
 const submitFeedback = async (req: VercelRequest, res: VercelResponse) => {
-    const { feedback, external_id, token } = req.body
+    const { feedback, external_id } = req.body
 
     if (!choiceExists(feedback))
         return respond(res, {
@@ -118,12 +118,11 @@ const handler: VercelHandler = async (req, res) => {
                 message: 'Captcha verification failed'
             })
     } else {
-        if (!isUserAllowed(token)) {
+        if (!isUserAllowed(token))
             return respond(res, {
                 type: ResponseTypes.Error,
                 message: 'Token is invalid'
             })
-        }
     }
 
     switch (method) {
