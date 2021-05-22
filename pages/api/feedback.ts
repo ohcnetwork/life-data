@@ -38,7 +38,7 @@ const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendM
             MessageBody: '',
             MessageAttributes: {
                 'Feedback': {
-                    DataType: 'Number',
+                    DataType: 'String',
                     StringValue: feedback.toString()
                 },
                 'ExternalID': {
