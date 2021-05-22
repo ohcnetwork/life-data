@@ -35,7 +35,7 @@ const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendM
     new Promise((resolve, reject) => {
         const sqsParams: AWS.SQS.SendMessageRequest = {
             QueueUrl: process.env.AWS_SQS_URL,
-            MessageBody: '',
+            MessageBody: 'life',
             MessageAttributes: {
                 'Feedback': {
                     DataType: 'String',
