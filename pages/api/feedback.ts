@@ -33,14 +33,13 @@ const isCaptchaVerified = async (captchaResponse: string) => {
 
 const sendToSQS = (feedback: number, external_id: string): Promise<AWS.SQS.SendMessageResult> =>
     new Promise((resolve, reject) => {
-        const choice = Choices[feedback]
         const sqsParams: AWS.SQS.SendMessageRequest = {
             QueueUrl: process.env.AWS_SQS_URL,
-            MessageBody: 'Feedback submitted by user, ' + choice,
+            MessageBody: '',
             MessageAttributes: {
                 'Feedback': {
-                    DataType: 'String',
-                    StringValue: choice
+                    DataType: 'Number',
+                    StringValue: feedback.toString()
                 },
                 'ExternalID': {
                     DataType: 'String',
