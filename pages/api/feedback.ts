@@ -1,5 +1,5 @@
 import axios from 'axios'
-import * as AWS from 'aws-sdk'
+import AWS from 'aws-sdk'
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { isUserAllowed, respond, ResponseTypes, VercelHandler } from '../../lib/helpers'
 
@@ -10,11 +10,14 @@ AWS.config.update({
 })
 const sqs = new AWS.SQS({ apiVersion: '2012-11-05' })
 
+// * Never change order when adding new attributes
 enum Choices {
     Upvote,
     Downvote,
     VerifiedAndAvailable,
-    VerifiedAndUnavailable
+    VerifiedAndUnavailable,
+    PotentialFraud,
+    PriceGauging
 }
 
 const isCaptchaVerified = async (captchaResponse: string) => {
