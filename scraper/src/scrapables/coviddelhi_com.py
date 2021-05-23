@@ -4,26 +4,26 @@ class CovidDelhiCom(Scrapable):
   hospital = 'https://coviddelhi.com/data/coviddelhi.com/bed_data.json'
   plasma = 'https://coviddelhi.com/data/coviddelhi.com/plasma_data.json'
 
-  column_map = {
-    'available_beds_allocated_to_covid': '1',
-    'hospital_name': '2',
-    'hospital_poc_phone': '3',
-    'bed_breakup': '4',
-    'area': '5',
-    'fee_regulated_beds': '6',
-    'hospital_category': '7',
-    'hospital_phone': '8',
-    'officer_name': '9',
-    'last_updated_on': '10',
-    'district': '11',
-    'hospital_poc_designation': '12',
-    'officer_designation': '13',
-    'total_beds_allocated_to_covid': '14',
-    'pincode': '15',
-    'hospital_poc_name': '16',
-    'hospital_address': '17',
-    'charges': '18'
-  }
+  # column_map = {
+  #   'available_beds_allocated_to_covid': '1',
+  #   'hospital_name': '2',
+  #   'hospital_poc_phone': '3',
+  #   'bed_breakup': '4',
+  #   'area': '5',
+  #   'fee_regulated_beds': '6',
+  #   'hospital_category': '7',
+  #   'hospital_phone': '8',
+  #   'officer_name': '9',
+  #   'last_updated_on': '10',
+  #   'district': '11',
+  #   'hospital_poc_designation': '12',
+  #   'officer_designation': '13',
+  #   'total_beds_allocated_to_covid': '14',
+  #   'pincode': '15',
+  #   'hospital_poc_name': '16',
+  #   'hospital_address': '17',
+  #   'charges': '18'
+  # }
 
   def get_json(self):
     import requests

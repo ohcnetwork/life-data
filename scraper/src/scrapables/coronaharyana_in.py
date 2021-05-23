@@ -1,4 +1,4 @@
-from scrapable import Scrapable
+from .scrapable import Scrapable
 from bs4 import BeautifulSoup
 
 class CoronaHaryanaIn(Scrapable):
