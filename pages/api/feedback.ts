@@ -1,7 +1,7 @@
 import axios from 'axios'
 import AWS from 'aws-sdk'
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { isUserAllowed, respond, ResponseTypes, VercelHandler } from '../../lib/helpers'
+import { cors, isUserAllowed, respond, ResponseTypes, VercelHandler } from '../../lib/helpers'
 
 AWS.config.update({
     accessKeyId: process.env.AWS_SQS_ACCESS,
@@ -145,4 +145,4 @@ const handler: VercelHandler = async (req, res) => {
     }
 }
 
-export default handler
+export default cors(handler)
