@@ -1,3 +1,5 @@
+> Archived as we no longer have a need for the unified database. The code base could be re-used to create a nation wide database of resources with a unified schema at a time of need. 
+
 # Life Data Transformation Pipeline
 
 ## Special API
